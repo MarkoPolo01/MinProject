@@ -2,14 +2,14 @@ import React, {useRef} from 'react';
 import {ActivityIndicator, SafeAreaView, View} from 'react-native';
 import {WebView} from 'react-native-webview';
 
-function App(): React.JSX.Element {
-  const webViewRef = useRef<WebView>(null);
-  const token = 'token';
+function App(){
+  const webViewRef = useRef(null);
 
   const sendToken = () => {
-    if (!webViewRef.current) { return; }
+    if (!webViewRef?.current) { return; }
+    const token = 'token';
 
-    webViewRef.current.postMessage(token);
+    webViewRef.current.postMessage(JSON.stringify(token));
   };
 
   const handleMessage = async e => {
