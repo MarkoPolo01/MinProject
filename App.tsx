@@ -4,16 +4,12 @@ import {WebView} from 'react-native-webview';
 
 function App(): React.JSX.Element {
   const webViewRef = useRef<WebView>(null);
+  const token = 'token';
 
-  const injectJsCode = () => {
-    const token = 'token';
-    return `
-    (function() {
-      window.ReactNativeWebView.postMessage(
-        JSON.stringify('${token}')
-      );
-    })();
-  `;
+  const sendToken = () => {
+    if (!webViewRef.current) { return; }
+
+    webViewRef.current.postMessage(token);
   };
 
   const handleMessage = async e => {
@@ -21,8 +17,7 @@ function App(): React.JSX.Element {
 
     switch (message) {
       case 'refreshToken':
-        // локика по получению токена
-        webViewRef?.current?.injectJavaScript(injectJsCode());
+        sendToken();
         break;
       default:
         break;
@@ -51,7 +46,7 @@ function App(): React.JSX.Element {
         onHttpError={e => console.log(e)}
         scrollEnabled
         allowsBackForwardNavigationGestures
-        injectedJavaScript={injectJsCode()}
+        onLoadEnd={() => { sendToken(); }}
         setSupportMultipleWindows={false}
         onMessage={handleMessage}
       />
